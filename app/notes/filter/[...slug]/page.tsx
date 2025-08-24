@@ -4,19 +4,22 @@ import { fetchNotes } from "@/lib/api";
 import type { Metadata } from "next";
 
 interface NotesProps {
-  params: { slug: string };
+  params: { slug?: string[] }; // зробили optional
 }
 
 export async function generateMetadata({ params }: NotesProps): Promise<Metadata> {
-  const { slug } = params;
-  const tag = slug?.[0] !== "all" ? slug?.[0] : "all"
-  const title = tag === "all" 
-    ? "All Notes - NoteHub" 
-    : `Notes filtered by "${tag}" - NoteHub`;
+  const slug = params.slug ?? []; // якщо slug відсутній, робимо порожній масив
+  const tag = slug[0] && slug[0] !== "all" ? slug[0] : "all";
 
-  const description = tag === "all"
-    ? "Browse all your notes efficiently in NoteHub."
-    : `View notes filtered by "${tag}" to manage them more effectively.`;
+  const title =
+    tag === "all"
+      ? "All Notes - NoteHub"
+      : `Notes filtered by "${tag}" - NoteHub`;
+
+  const description =
+    tag === "all"
+      ? "Browse all your notes efficiently in NoteHub."
+      : `View notes filtered by "${tag}" to manage them more effectively.`;
 
   return {
     title,
@@ -39,10 +42,9 @@ export async function generateMetadata({ params }: NotesProps): Promise<Metadata
   };
 }
 
-
 export default async function Notes({ params }: NotesProps) {
-  const { slug } = params;
-  const tag = slug?.[0] !== "all" ? slug?.[0] : undefined;
+  const slug = params.slug ?? [];
+  const tag = slug[0] && slug[0] !== "all" ? slug[0] : undefined; // undefined для fetchNotes пока все
 
   const queryClient = new QueryClient();
 
