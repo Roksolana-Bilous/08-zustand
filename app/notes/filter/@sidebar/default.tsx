@@ -17,7 +17,7 @@ export default function SidebarNotes() {
                 </Link>
             </li>
             ))}
-        </ul>
+            </ul>
         </div>
     );
 }
