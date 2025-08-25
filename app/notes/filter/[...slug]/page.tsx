@@ -4,12 +4,12 @@ import { fetchNotes } from "@/lib/api";
 import type { Metadata } from "next";
 
 interface NotesProps {
-  params: { slug?: string[] }; // зробили optional
+    params: Promise<{ slug?: string[] }>;
 }
 
 export async function generateMetadata({ params }: NotesProps): Promise<Metadata> {
-  const slug = params.slug ?? []; // якщо slug відсутній, робимо порожній масив
-  const tag = slug[0] && slug[0] !== "all" ? slug[0] : "all";
+  const {slug} =  await params;
+const tag = slug?.[0] && slug[0] !== "all" ? slug[0] : undefined;         
 
   const title =
     tag === "all"
@@ -43,8 +43,8 @@ export async function generateMetadata({ params }: NotesProps): Promise<Metadata
 }
 
 export default async function Notes({ params }: NotesProps) {
-  const slug = params.slug ?? [];
-  const tag = slug[0] && slug[0] !== "all" ? slug[0] : undefined; // undefined для fetchNotes пока все
+  const {slug} =  await params;
+  const tag = slug?.[0] && slug[0] !== "all" ? slug[0] : undefined;
 
   const queryClient = new QueryClient();
 

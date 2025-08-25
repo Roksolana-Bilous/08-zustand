@@ -17,7 +17,6 @@ export const metadata: Metadata = {
         alt: "Create Note",
       },
     ],
-    type: "article",
   },
 };
 
