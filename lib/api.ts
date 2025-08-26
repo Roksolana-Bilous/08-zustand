@@ -28,6 +28,12 @@ interface RawFetchNotesResponse {
   totalPages: number;
 }
 
+export interface CreateNoteDto {
+  title: string;
+  content: string;
+  tag: NoteTag;
+}
+
 export const fetchNotes = async ({
   page = 1,
   perPage = 12,
@@ -57,13 +63,9 @@ export const fetchNoteById = async (id: string): Promise<Note> => {
   const response = await axios.get<Note>(`/notes/${id}`);
   return response.data;
 };
-export const CreateNote = async (note: {
-    title: string;
-    content: string;
-    tag: NoteTag;
-}): Promise<Note> => {
-    const response = await axios.post<Note>('/notes', note);
-    return response.data;
+export const CreateNote = async (note: CreateNoteDto): Promise<Note> => {
+  const response = await axios.post<Note>('/notes', note);
+  return response.data;
 };
 export const deleteNote = async (id: string): Promise<Note> => {
     const response = await axios.delete<Note>(`/notes/${id}`);

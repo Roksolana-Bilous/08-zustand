@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CreateNote } from "@/lib/api";
 import { useNoteStore } from "@/lib/store/noteStore";
@@ -14,8 +13,6 @@ interface NoteFormProps {
 export default function NoteForm({ onClose }: NoteFormProps) {
   const queryClient = useQueryClient();
   const { draft, setDraft, clearDraft } = useNoteStore();
-
-  const [localDraft, setLocalDraft] = useState(draft);
 
   const mutation = useMutation({
     mutationFn: CreateNote,
@@ -32,16 +29,15 @@ export default function NoteForm({ onClose }: NoteFormProps) {
     >
   ) => {
     const { name, value } = e.target;
-    setLocalDraft((prev) => ({ ...prev, [name]: value }));
     setDraft({ [name]: value } as Partial<typeof draft>);
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     mutation.mutate({
-      title: localDraft.title,
-      content: localDraft.content,
-      tag: localDraft.tag as NoteTag,
+      title: draft.title,
+      content: draft.content,
+      tag: draft.tag as NoteTag,
     });
   };
 
@@ -54,7 +50,7 @@ export default function NoteForm({ onClose }: NoteFormProps) {
           name="title"
           id="title"
           className={css.input}
-          value={localDraft.title}
+          value={draft.title}
           onChange={handleChange}
           required
           minLength={3}
@@ -69,7 +65,7 @@ export default function NoteForm({ onClose }: NoteFormProps) {
           id="content"
           rows={8}
           className={css.textarea}
-          value={localDraft.content}
+          value={draft.content}
           onChange={handleChange}
           maxLength={500}
         />
@@ -81,7 +77,7 @@ export default function NoteForm({ onClose }: NoteFormProps) {
           name="tag"
           id="tag"
           className={css.select}
-          value={localDraft.tag}
+          value={draft.tag}
           onChange={handleChange}
           required
         >
