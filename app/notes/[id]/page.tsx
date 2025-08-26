@@ -12,7 +12,8 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const { id } =  await params;
 
-
+  const note = await fetchNoteById(id);
+  
   return {
     title: note?.title || "Note Details - NoteHub",
     description: note?.content
