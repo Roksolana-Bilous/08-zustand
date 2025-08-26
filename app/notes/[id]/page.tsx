@@ -1,27 +1,34 @@
 import { fetchNoteById } from "@/lib/api";
 import { QueryClient, dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import NoteDetailsClient from "./NoteDetails.client";
-import { Metadata } from "next";
+import type { Metadata } from "next";
 
 type NoteDetailsProps = {
-    params: Promise<{ id: string }>;
-}
+  params: { id: string };
+};
 
-export async function generateMetadata({ params }: NoteDetailsProps): Promise<Metadata> {
-  const { id } = await params;
+export async function generateMetadata(
+  { params }: NoteDetailsProps
+): Promise<Metadata> {
+  const { id } = params;
+
+  const note = await fetchNoteById(id);
+
   return {
-    title: `Note Details - NoteHub`,
-    description: `View details for note with ID: ${id}`,
+    title: note?.title || "Note Details - NoteHub",
+    description: note?.content
+      ? note.content.slice(0, 150) + (note.content.length > 150 ? "..." : "")
+      : `View details for note with ID: ${id}`,
     openGraph: {
-      title: `Note Details - NoteHub`,
-      description: `View details for note with ID: ${id}`,
+      title: note?.title || "Note Details - NoteHub",
+      description: note?.content || `View details for note with ID: ${id}`,
       url: `https://notehub.com/notes/${id}`,
       images: [
         {
           url: "https://ac.goit.global/fullstack/react/og-meta.jpg",
           width: 1200,
           height: 630,
-          alt: "NoteHub title",
+          alt: note?.title || "NoteHub Note",
         },
       ],
       type: "article",
@@ -30,7 +37,7 @@ export async function generateMetadata({ params }: NoteDetailsProps): Promise<Me
 }
 
 const NoteDetails = async ({ params }: NoteDetailsProps) => {
-  const { id } = await params;
+  const { id } = params;
   const queryClient = new QueryClient();
 
   await queryClient.prefetchQuery({
