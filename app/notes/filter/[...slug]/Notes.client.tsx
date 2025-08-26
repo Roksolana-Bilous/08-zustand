@@ -10,9 +10,6 @@ import SearchBox from "@/components/SearchBox/SearchBox";
 import Link from "next/link";
 import css from "./Notes.module.css";
 
-interface NotesClientProps {
-  tag?: string;
-}
 
 export default function NotesClient({ tag }: NotesClientProps) {
   const [page, setPage] = useState(1);
