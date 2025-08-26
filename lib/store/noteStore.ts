@@ -30,6 +30,9 @@ export const useNoteStore = create<NoteStore>()(
         })),
       clearDraft: () => set({ draft: initialDraft }),
     }),
-    { name: "note-draft" }
+    {
+      name: "note-draft",
+      partialize: (state) => ({ draft: state.draft }),
+    }
   )
 );
